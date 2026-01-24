@@ -68,6 +68,26 @@ class PersonResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('calculate_9box')
+                    ->label('Calcular 9Box')
+                    ->icon('heroicon-o-calculator')
+                    ->form([
+                        Forms\Components\Select::make('cycle_id')
+                            ->label('Ciclo')
+                            ->options(\App\Models\Cycle::all()->pluck('name', 'id'))
+                            ->required(),
+                    ])
+                    ->action(function (Person $record, array $data) {
+                        $cycle = \App\Models\Cycle::find($data['cycle_id']);
+                        $aggregator = app(\App\Domains\Aggregation\Services\EvidenceAggregator::class);
+                        $result = $aggregator->calculate($record, $cycle);
+
+                        \Filament\Notifications\Notification::make()
+                            ->title("Quadrante: {$result->quadrantLabel}")
+                            ->body("Performance: {$result->x}% | Potencial: {$result->y}% (Baseado em {$result->evidenceCount} evidências)")
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

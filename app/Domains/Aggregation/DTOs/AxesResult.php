@@ -1,0 +1,14 @@
+<?php
+
+namespace App\Domains\Aggregation\DTOs;
+
+readonly class AxesResult
+{
+    public function __construct(
+        public int $x, // Performance Score (0-100)
+        public int $y, // Potential Score (0-100)
+        public int $evidenceCount,
+        public string $quadrantLabel = '', // Can be populated later
+    ) {
+    }
+}
