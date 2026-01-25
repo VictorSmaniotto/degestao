@@ -100,6 +100,11 @@ class PersonResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\Action::make('print_report')
+                    ->label('Relatório')
+                    ->icon('heroicon-o-printer')
+                    ->url(fn(Person $record) => route('people.print', $record))
+                    ->openUrlInNewTab(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('calculate_9box')
                     ->label('Calcular 9Box')

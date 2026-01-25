@@ -11,4 +11,8 @@ readonly class AxesResult
         public string $quadrantLabel = '', // Can be populated later
     ) {
     }
+    public function getAverage(): int
+    {
+        return (int) round(($this->x + $this->y) / 2);
+    }
 }
