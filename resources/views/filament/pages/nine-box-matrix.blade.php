@@ -138,8 +138,8 @@
 
                     <div class="flex items-center gap-4">
                         <!-- Avatar -->
-                        <div class="w-12 h-12 rounded-full flex items-center justify-center text-sm font-semibold shrink-0 ring-2 shadow-md"
-                            style="background: hsl(220 70% 55% / 0.1); color: hsl(220 70% 55%); ring-color: hsl(220 25% 8%);">
+                        <div class="rounded-full flex items-center justify-center font-semibold shrink-0 shadow-md"
+                            style="width: 48px; height: 48px; font-size: 0.9rem; background: hsl(220 70% 55%); color: white; border: 2px solid hsl(220 15% 80%);">
                             {{ strtoupper(substr($employee['name'], 0, 2)) }}
                         </div>
 
@@ -181,8 +181,8 @@
                     <!-- Footer: Category Badge -->
                     <div class="mt-4 pt-4 flex items-center justify-between gap-3"
                         style="border-top: 1px solid hsl(220 20% 20%);">
-                        <span class="inline-flex items-center font-semibold rounded-full px-2 py-0.5 text-xs"
-                            style="background: {{ $cat['bgColor'] }}; color: {{ $cat['color'] }};">
+                        <span class="inline-flex items-center font-semibold rounded-full text-xs"
+                            style="background: {{ $cat['bgColor'] }}; color: {{ $cat['color'] }}; padding: 6px 12px;">
                             {{ $cat['label'] }}
                         </span>
                         <span class="text-xs text-right line-clamp-1" style="color: hsl(220 10% 60%);">
