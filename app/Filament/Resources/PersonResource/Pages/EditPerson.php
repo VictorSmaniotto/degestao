@@ -16,4 +16,11 @@ class EditPerson extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function getFooterWidgets(): array
+    {
+        return [
+            \App\Filament\Resources\PersonResource\Widgets\CompetencyRadarChart::class,
+        ];
+    }
 }

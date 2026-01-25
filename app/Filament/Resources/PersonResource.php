@@ -17,23 +17,29 @@ class PersonResource extends Resource
 {
     protected static ?string $model = Person::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static ?string $modelLabel = 'Colaborador';
+    protected static ?string $pluralModelLabel = 'Colaboradores';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label('Nome Completo')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('email')
+                    ->label('E-mail Corporativo')
                     ->email()
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('role')
+                    ->label('Cargo')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\DatePicker::make('admitted_at')
+                    ->label('Data de Admissão')
                     ->required(),
             ]);
     }
@@ -46,12 +52,16 @@ class PersonResource extends Resource
                     ->label('ID')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nome')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
+                    ->label('E-mail')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('role')
+                    ->label('Cargo')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('admitted_at')
+                    ->label('Admissão')
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')

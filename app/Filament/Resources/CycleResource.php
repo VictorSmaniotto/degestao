@@ -17,20 +17,26 @@ class CycleResource extends Resource
 {
     protected static ?string $model = Cycle::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-clock';
+    protected static ?string $modelLabel = 'Ciclo';
+    protected static ?string $pluralModelLabel = 'Ciclos';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label('Nome do Ciclo')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\DatePicker::make('start_date')
+                    ->label('Data Início')
                     ->required(),
                 Forms\Components\DatePicker::make('end_date')
+                    ->label('Data Fim')
                     ->required(),
                 Forms\Components\Toggle::make('is_active')
+                    ->label('Ciclo Ativo')
                     ->required(),
             ]);
     }
@@ -43,14 +49,18 @@ class CycleResource extends Resource
                     ->label('ID')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nome')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('start_date')
+                    ->label('Data Início')
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('end_date')
+                    ->label('Data Fim')
                     ->date()
                     ->sortable(),
                 Tables\Columns\IconColumn::make('is_active')
+                    ->label('Ativo?')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
