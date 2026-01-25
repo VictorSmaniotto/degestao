@@ -15,6 +15,11 @@ class NineBoxMatrix extends Page
     protected static ?string $slug = 'nine-box';
 
     public ?string $cycleId = null;
+    public ?string $search = ''; // Adicionado search
+    public ?string $selectedDepartment = null;
+    public ?string $selectedQuadrant = null;
+    public bool $showFilters = false;
+
     public ?string $selectedPersonId = null;
     public ?array $selectedPerson = null;
 
@@ -23,6 +28,8 @@ class NineBoxMatrix extends Page
         // Default to latest active cycle
         $this->cycleId = \App\Models\Cycle::active()->latest('start_date')->first()?->id;
     }
+
+    // ... (selectPerson mantido igual) ...
 
     public function selectPerson(string $id): void
     {
@@ -83,10 +90,17 @@ class NineBoxMatrix extends Page
         $this->selectedPerson = null;
     }
 
+    public function toggleFilters(): void
+    {
+        $this->showFilters = !$this->showFilters;
+    }
+
     public function getViewData(): array
     {
         return [
             'cycles' => \App\Models\Cycle::orderByDesc('start_date')->pluck('name', 'id'),
+            'departments' => \App\Models\Person::distinct()->whereNotNull('department')->orderBy('department')->pluck('department', 'department'),
+            'quadrants' => $this->getQuadrants(),
             'matrix' => $this->calculateMatrix(),
         ];
     }
@@ -98,7 +112,24 @@ class NineBoxMatrix extends Page
         }
 
         $cycle = \App\Models\Cycle::find($this->cycleId);
-        $people = \App\Models\Person::all();
+
+        // Aplica filtro de busca se houver
+        $query = \App\Models\Person::query();
+
+        if ($this->search) {
+            $query->where(function ($q) {
+                $q->where('name', 'like', '%' . $this->search . '%')
+                    ->orWhere('role', 'like', '%' . $this->search . '%')
+                    ->orWhere('department', 'like', '%' . $this->search . '%');
+            });
+        }
+
+        if ($this->selectedDepartment) {
+            $query->where('department', $this->selectedDepartment);
+        }
+
+        $people = $query->get();
+
         $aggregator = app(\App\Domains\Aggregation\Services\EvidenceAggregator::class);
         $quadrants = $this->getQuadrants();
 
@@ -124,6 +155,10 @@ class NineBoxMatrix extends Page
             $xLegacy = $perfIndex - 1;
             $yLegacy = $potIndex - 1;
             $quadrantKey = "{$xLegacy}-{$yLegacy}";
+
+            if ($this->selectedQuadrant && $this->selectedQuadrant !== $quadrantKey) {
+                continue;
+            }
 
             // Fallback to Mid-Mid if config missing, though should cover all cases
             $config = $quadrants[$quadrantKey] ?? $quadrants['1-1'];

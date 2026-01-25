@@ -103,7 +103,8 @@
         <div class="w-full md:w-1/3">
             <div class="relative">
                 <x-heroicon-o-magnifying-glass class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input type="text" placeholder="Buscar colaborador..." class="pl-10 w-full rounded-lg text-sm"
+                <input type="text" wire:model.live.debounce.500ms="search" placeholder="Buscar colaborador..."
+                    class="pl-10 w-full rounded-lg text-sm"
                     style="background: var(--nb-input-bg); border: 1px solid var(--nb-input-border); color: var(--nb-text-primary); padding: 0.5rem 0.75rem 0.5rem 2.5rem;" />
             </div>
         </div>
@@ -117,9 +118,47 @@
                 @endforeach
             </select>
 
-            <button class="px-4 py-2 text-sm font-medium rounded-lg"
+            <button wire:click="toggleFilters" class="px-4 py-2 text-sm font-medium rounded-lg transition-colors hover:opacity-80"
+                style="background: {{ $showFilters ? 'var(--nb-avatar-bg)' : 'var(--nb-input-bg)' }}; border: 1px solid var(--nb-input-border); color: {{ $showFilters ? 'var(--nb-avatar-text)' : 'var(--nb-text-primary)' }};">
+                <div class="flex items-center gap-2">
+                    <x-heroicon-o-funnel class="w-4 h-4" />
+                    Filtros
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <!-- Filtros Expansíveis -->
+    <div x-show="$wire.showFilters" x-transition.origin.top.duration.200ms
+        class="mb-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4 rounded-xl shadow-inner"
+        style="background: var(--nb-matrix-bg); border: 1px solid var(--nb-card-border);">
+        
+        <div>
+            <label class="block text-xs font-medium mb-1 pl-1" style="color: var(--nb-text-secondary);">Departamento</label>
+            <select wire:model.live="selectedDepartment" class="w-full rounded-lg text-sm"
                 style="background: var(--nb-input-bg); border: 1px solid var(--nb-input-border); color: var(--nb-text-primary);">
-                Filtros
+                <option value="">Todos os Departamentos</option>
+                @foreach($departments as $dept)
+                    <option value="{{ $dept }}">{{ $dept }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div>
+            <label class="block text-xs font-medium mb-1 pl-1" style="color: var(--nb-text-secondary);">Quadrante</label>
+            <select wire:model.live="selectedQuadrant" class="w-full rounded-lg text-sm"
+                style="background: var(--nb-input-bg); border: 1px solid var(--nb-input-border); color: var(--nb-text-primary);">
+                <option value="">Todos os Quadrantes</option>
+                @foreach($quadrants as $key => $q)
+                    <option value="{{ $key }}">{{ $q['label'] }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="flex items-end">
+            <button wire:click="$set('selectedDepartment', null); $set('selectedQuadrant', null);" 
+                class="text-xs hover:underline mb-2" style="color: var(--nb-text-muted);">
+                Limpar Filtros
             </button>
         </div>
     </div>
