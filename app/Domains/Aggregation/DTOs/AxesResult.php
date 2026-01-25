@@ -8,6 +8,8 @@ readonly class AxesResult
         public int $x, // Performance Score (0-100)
         public int $y, // Potential Score (0-100)
         public int $evidenceCount,
+        public ?int $previousX = null,
+        public ?int $previousY = null,
         public string $quadrantLabel = '', // Can be populated later
     ) {
     }

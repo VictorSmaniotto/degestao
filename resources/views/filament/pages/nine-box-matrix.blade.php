@@ -70,31 +70,6 @@
                 'recommendation' => 'Compreender motivações e realinhar expectativas'
             ],
         ];
-
-        // Function to get category key from position
-        function getCategoryKey($position)
-        {
-            $perf = $position['performance'];
-            $pot = $position['potential'];
-
-            if ($pot === 3 && $perf === 3)
-                return 'star';
-            if ($pot === 2 && $perf === 3)
-                return 'high-performer';
-            if ($pot === 3 && $perf === 2)
-                return 'high-potential';
-            if ($pot === 2 && $perf === 2)
-                return 'core-player';
-            if ($pot === 1 && $perf === 3)
-                return 'solid-performer';
-            if ($pot === 3 && $perf === 1)
-                return 'inconsistent';
-            if ($pot === 1 && $perf === 2)
-                return 'risk';
-            if ($pot === 1 && $perf === 1)
-                return 'underperformer';
-            return 'enigma'; // pot === 2 && perf === 1
-        }
     @endphp
 
     <!-- Header Controls -->
@@ -175,7 +150,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
             @foreach($matrix as $employee)
                 @php
-                    $catKey = getCategoryKey($employee['position']);
+                    $catKey = $this->getCategoryKey($employee['position']);
                     $cat = $categoryConfig[$catKey];
                 @endphp
                 <div wire:click="selectPerson('{{ $employee['id'] }}')"
@@ -206,21 +181,63 @@
 
                         <!-- Status Dot + Mini Matrix -->
                         <div class="shrink-0" style="display: flex; flex-direction: row; align-items: center; gap: 0.5rem;">
-                            <!-- Mini Matrix -->
-                            <div
-                                style="display: inline-grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding: 4px; background: var(--nb-matrix-bg); border-radius: 4px;">
-                                @for ($pot = 3; $pot >= 1; $pot--)
-                                    @for ($perf = 1; $perf <= 3; $perf++)
-                                        @php
-                                            $isActive = ($employee['position']['potential'] == $pot && $employee['position']['performance'] == $perf);
-                                            $cellCatKey = getCategoryKey(['potential' => $pot, 'performance' => $perf]);
-                                            $cellColor = $isActive ? $categoryConfig[$cellCatKey]['color'] : 'var(--nb-matrix-inactive)';
-                                        @endphp
-                                        <div
-                                            style="width: 14px; height: 14px; border-radius: 2px; background: {{ $cellColor }}; {{ $isActive ? 'box-shadow: 0 0 6px ' . $cellColor . ';' : '' }}">
-                                        </div>
+                            <!-- Mini Matrix with History Trail -->
+                            <div class="relative" style="display: inline-block;">
+                                <div
+                                    style="display: inline-grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding: 4px; background: var(--nb-matrix-bg); border-radius: 4px;">
+                                    @for ($pot = 3; $pot >= 1; $pot--)
+                                        @for ($perf = 1; $perf <= 3; $perf++)
+                                            @php
+                                                $isActive = ($employee['position']['potential'] == $pot && $employee['position']['performance'] == $perf);
+                                                $isPrev = ($employee['previous_position']['potential'] ?? 0) == $pot && ($employee['previous_position']['performance'] ?? 0) == $perf;
+
+                                                $cellCatKey = $this->getCategoryKey(['potential' => $pot, 'performance' => $perf]);
+                                                // If isPrev, show a ghost/faded color, otherwise standard logic
+                                                $cellColor = $isActive ? $categoryConfig[$cellCatKey]['color'] : 'var(--nb-matrix-inactive)';
+                                                if ($isPrev && !$isActive)
+                                                    $cellColor = 'var(--nb-matrix-inactive)'; // Prev only marked by arrow, or could be a lighter shade
+                                            @endphp
+                                            <div
+                                                style="width: 14px; height: 14px; border-radius: 2px; background: {{ $cellColor }}; {{ $isActive ? 'box-shadow: 0 0 6px ' . $cellColor . ';' : '' }} {{ $isPrev ? 'opacity: 0.5;' : ''}}">
+                                            </div>
+                                        @endfor
                                     @endfor
-                                @endfor
+                                </div>
+
+                                <!-- Arrow Overlay -->
+                                @if(isset($employee['previous_position']))
+                                    @php
+                                        // Calculate coordinates for 3x3 grid (cells are approx 14px + 2px gap)
+                                        // Grid starts top-left.
+                                        // Perf (X): 1=Left, 2=Mid, 3=Right
+                                        // Pot (Y): 3=Top, 2=Mid, 1=Bottom
+
+                                        $cellSize = 16; // 14px + 2px gap
+                                        $padding = 4;
+                                        $half = 7;
+
+                                        $x1 = $padding + (($employee['previous_position']['performance'] - 1) * $cellSize) + $half;
+                                        $y1 = $padding + ((3 - $employee['previous_position']['potential']) * $cellSize) + $half;
+
+                                        $x2 = $padding + (($employee['position']['performance'] - 1) * $cellSize) + $half;
+                                        $y2 = $padding + ((3 - $employee['position']['potential']) * $cellSize) + $half;
+                                    @endphp
+                                    <svg
+                                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible;">
+                                        <defs>
+                                            <marker id="arrowhead-{{ $employee['id'] }}" markerWidth="6" markerHeight="4" refX="5"
+                                                refY="2" orient="auto">
+                                                <polygon points="0 0, 6 2, 0 4" fill="var(--nb-text-primary)" />
+                                            </marker>
+                                        </defs>
+                                        <line x1="{{ $x1 }}" y1="{{ $y1 }}" x2="{{ $x2 }}" y2="{{ $y2 }}"
+                                            stroke="var(--nb-text-primary)" stroke-width="1.5"
+                                            marker-end="url(#arrowhead-{{ $employee['id'] }})" opacity="0.6"
+                                            stroke-dasharray="2,1" />
+                                        <!-- Start Dot -->
+                                        <circle cx="{{ $x1 }}" cy="{{ $y1 }}" r="1.5" fill="var(--nb-text-primary)" opacity="0.6" />
+                                    </svg>
+                                @endif
                             </div>
                             <!-- Colored Status Dot -->
                             <div style="width: 10px; height: 10px; border-radius: 50%; background: {{ $cat['color'] }};"></div>
@@ -254,7 +271,7 @@
     <!-- MODAL OVERLAY -->
     @if($selectedPerson)
         @php
-            $modalCatKey = getCategoryKey($selectedPerson['position']);
+            $modalCatKey = $this->getCategoryKey($selectedPerson['position']);
             $modalCat = $categoryConfig[$modalCatKey];
         @endphp
         <div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6" x-data
@@ -362,7 +379,7 @@
                                         @for ($perf = 1; $perf <= 3; $perf++)
                                             @php
                                                 $isActive = ($selectedPerson['position']['potential'] == $pot && $selectedPerson['position']['performance'] == $perf);
-                                                $cellCatKey = getCategoryKey(['potential' => $pot, 'performance' => $perf]);
+                                                $cellCatKey = $this->getCategoryKey(['potential' => $pot, 'performance' => $perf]);
                                                 $cellColor = $isActive ? $categoryConfig[$cellCatKey]['color'] : 'var(--nb-matrix-inactive)';
                                             @endphp
                                             <div

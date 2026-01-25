@@ -113,6 +113,11 @@ class NineBoxMatrix extends Page
 
         $cycle = \App\Models\Cycle::find($this->cycleId);
 
+        // Determinar ciclo anterior para comparação (Histórico)
+        $previousCycle = \App\Models\Cycle::where('end_date', '<', $cycle->start_date)
+            ->orderByDesc('end_date')
+            ->first();
+
         // Aplica filtro de busca se houver
         $query = \App\Models\Person::query();
 
@@ -153,6 +158,14 @@ class NineBoxMatrix extends Page
         foreach ($people as $person) {
             $result = $aggregator->calculate($person, $cycle);
 
+            // Calcular histórico se houver ciclo anterior
+            $previousResult = null;
+            if ($previousCycle) {
+                $previousResult = $aggregator->calculate($person, $previousCycle);
+            }
+
+            // Map 0-100 score to 1-3 index for MiniMatrix
+
             // Map 0-100 score to 1-3 index for MiniMatrix
             $perfIndex = match (true) {
                 $result->x <= 33 => 1,
@@ -178,6 +191,29 @@ class NineBoxMatrix extends Page
             // Fallback to Mid-Mid if config missing, though should cover all cases
             $config = $quadrants[$quadrantKey] ?? $quadrants['1-1'];
 
+            // Calculate Previous Indices if available
+            $prevPosition = null;
+            if ($previousResult && $previousResult->evidenceCount > 0) {
+                $prevPerfIndex = match (true) {
+                    $previousResult->x <= 33 => 1,
+                    $previousResult->x <= 66 => 2,
+                    default => 3,
+                };
+                $prevPotIndex = match (true) {
+                    $previousResult->y <= 33 => 1,
+                    $previousResult->y <= 66 => 2,
+                    default => 3,
+                };
+
+                // Only show history if position Changed
+                if ($prevPerfIndex !== $perfIndex || $prevPotIndex !== $potIndex) {
+                    $prevPosition = [
+                        'performance' => $prevPerfIndex,
+                        'potential' => $prevPotIndex,
+                    ];
+                }
+            }
+
             $employees[] = [
                 'id' => $person->id,
                 'name' => $person->name,
@@ -191,6 +227,7 @@ class NineBoxMatrix extends Page
                     'performance' => $perfIndex, // 1-3
                     'potential' => $potIndex, // 1-3
                 ],
+                'previous_position' => $prevPosition,
                 'category' => [
                     'label' => $config['label'],
                     'color' => $config['color'],
@@ -279,5 +316,30 @@ class NineBoxMatrix extends Page
     public function updatedCycleId(): void
     {
         // Livewire auto-refresh
+    }
+
+    public function getCategoryKey(array $position): string
+    {
+        $perf = $position['performance'];
+        $pot = $position['potential'];
+
+        if ($pot === 3 && $perf === 3)
+            return 'star';
+        if ($pot === 2 && $perf === 3)
+            return 'high-performer';
+        if ($pot === 3 && $perf === 2)
+            return 'high-potential';
+        if ($pot === 2 && $perf === 2)
+            return 'core-player';
+        if ($pot === 1 && $perf === 3)
+            return 'solid-performer';
+        if ($pot === 3 && $perf === 1)
+            return 'inconsistent';
+        if ($pot === 1 && $perf === 2)
+            return 'risk';
+        if ($pot === 1 && $perf === 1)
+            return 'underperformer';
+
+        return 'enigma'; // pot === 2 && perf === 1
     }
 }
