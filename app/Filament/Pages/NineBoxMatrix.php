@@ -182,6 +182,7 @@ class NineBoxMatrix extends Page
                 'id' => $person->id,
                 'name' => $person->name,
                 'role' => $person->role,
+                'department' => $person->department,
                 'avatar' => null, // Person model has no avatar column yet
                 'email' => $person->email,
                 'x' => $result->x,

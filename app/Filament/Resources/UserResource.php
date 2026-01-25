@@ -48,10 +48,27 @@ class UserResource extends Resource
                     ->default('employee'),
                 Forms\Components\Select::make('person_id')
                     ->label('Vincular Colaborador')
-                    ->relationship('person', 'name')
+                    ->relationship('person', 'name', modifyQueryUsing: function (Builder $query, ?User $record) {
+                        // Mostra pessoas sem usuário vinculado OU a pessoa já vinculada a este registro (edição)
+                        return $query->whereDoesntHave('user')
+                            ->when($record?->person_id, fn($q) => $q->orWhere('id', $record->person_id));
+                    })
                     ->searchable()
                     ->preload()
-                    ->helperText('Selecione quem é este usuário na estrutura da empresa.'),
+                    ->helperText('Selecione quem é este usuário na estrutura da empresa.')
+                    ->required(fn(Forms\Get $get) => $get('role') !== 'admin')
+                    ->validationMessages([
+                        'required' => 'Para usuários não-admin, é obrigatório vincular a um colaborador.',
+                    ])
+                    ->live()
+                    ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
+                        if ($state && !$get('email')) {
+                            $person = \App\Models\Person::find($state);
+                            if ($person) {
+                                $set('email', $person->email);
+                            }
+                        }
+                    }),
                 Forms\Components\TextInput::make('password')
                     ->label('Senha')
                     ->password()

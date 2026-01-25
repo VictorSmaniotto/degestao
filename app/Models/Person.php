@@ -51,4 +51,9 @@ class Person extends Model
     {
         return $this->hasMany(Person::class, 'manager_id');
     }
+
+    public function user()
+    {
+        return $this->hasOne(User::class);
+    }
 }

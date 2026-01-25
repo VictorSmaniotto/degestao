@@ -32,12 +32,32 @@ class PersonResource extends Resource
                 Forms\Components\TextInput::make('email')
                     ->label('E-mail Corporativo')
                     ->email()
+                    ->unique(ignoreRecord: true)
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('role')
                     ->label('Cargo')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('department')
+                    ->label('Departamento')
+                    ->maxLength(255),
+                Forms\Components\Select::make('manager_id')
+                    ->label('Gestor Responsável')
+                    ->relationship(
+                        'manager',
+                        'name',
+                        modifyQueryUsing: fn(Builder $query, ?Person $record) =>
+                        $query->whereHas('user', function ($q) {
+                            $q->whereIn('role', ['manager', 'admin']);
+                        })
+                            ->when($record, fn($q) => $q->where('id', '!=', $record->id))
+                    )
+                    ->searchable()
+                    ->preload()
+                    ->placeholder('Selecione um gestor (Opcional)')
+                    ->nullable() // Garante que pode salvar como null
+                    ->required(false),
                 Forms\Components\DatePicker::make('admitted_at')
                     ->label('Data de Admissão')
                     ->required(),
@@ -56,6 +76,12 @@ class PersonResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('role')
                     ->label('Cargo')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('department')
+                    ->label('Departamento')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('manager.name')
+                    ->label('Gestor')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('admitted_at')
                     ->label('Admissão')

@@ -118,7 +118,8 @@
                 @endforeach
             </select>
 
-            <button wire:click="toggleFilters" class="px-4 py-2 text-sm font-medium rounded-lg transition-colors hover:opacity-80"
+            <button wire:click="toggleFilters"
+                class="px-4 py-2 text-sm font-medium rounded-lg transition-colors hover:opacity-80"
                 style="background: {{ $showFilters ? 'var(--nb-avatar-bg)' : 'var(--nb-input-bg)' }}; border: 1px solid var(--nb-input-border); color: {{ $showFilters ? 'var(--nb-avatar-text)' : 'var(--nb-text-primary)' }};">
                 <div class="flex items-center gap-2">
                     <x-heroicon-o-funnel class="w-4 h-4" />
@@ -132,9 +133,10 @@
     <div x-show="$wire.showFilters" x-transition.origin.top.duration.200ms
         class="mb-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4 rounded-xl shadow-inner"
         style="background: var(--nb-matrix-bg); border: 1px solid var(--nb-card-border);">
-        
+
         <div>
-            <label class="block text-xs font-medium mb-1 pl-1" style="color: var(--nb-text-secondary);">Departamento</label>
+            <label class="block text-xs font-medium mb-1 pl-1"
+                style="color: var(--nb-text-secondary);">Departamento</label>
             <select wire:model.live="selectedDepartment" class="w-full rounded-lg text-sm"
                 style="background: var(--nb-input-bg); border: 1px solid var(--nb-input-border); color: var(--nb-text-primary);">
                 <option value="">Todos os Departamentos</option>
@@ -145,7 +147,8 @@
         </div>
 
         <div>
-            <label class="block text-xs font-medium mb-1 pl-1" style="color: var(--nb-text-secondary);">Quadrante</label>
+            <label class="block text-xs font-medium mb-1 pl-1"
+                style="color: var(--nb-text-secondary);">Quadrante</label>
             <select wire:model.live="selectedQuadrant" class="w-full rounded-lg text-sm"
                 style="background: var(--nb-input-bg); border: 1px solid var(--nb-input-border); color: var(--nb-text-primary);">
                 <option value="">Todos os Quadrantes</option>
@@ -156,7 +159,7 @@
         </div>
 
         <div class="flex items-end">
-            <button wire:click="$set('selectedDepartment', null); $set('selectedQuadrant', null);" 
+            <button wire:click="$set('selectedDepartment', null); $set('selectedQuadrant', null);"
                 class="text-xs hover:underline mb-2" style="color: var(--nb-text-muted);">
                 Limpar Filtros
             </button>
@@ -194,9 +197,11 @@
                             </h3>
                             <p class="text-sm truncate" style="color: var(--nb-text-secondary);">{{ $employee['role'] }}
                             </p>
-                            <p class="text-xs mt-0.5 truncate" style="color: var(--nb-text-muted);">
-                                {{ $employee['department'] ?? 'Sem departamento' }}
-                            </p>
+                            @if($employee['department'])
+                                <p class="text-xs mt-0.5 truncate" style="color: var(--nb-text-muted);">
+                                    {{ $employee['department'] }}
+                                </p>
+                            @endif
                         </div>
 
                         <!-- Status Dot + Mini Matrix -->
