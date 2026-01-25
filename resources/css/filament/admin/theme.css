@@ -5,3 +5,172 @@
 @import '../../../../vendor/filament/filament/resources/css/base.css';
 
 @config 'tailwind.config.js';
+
+/* ===========================================
+   DeGestão Global Theme - Light & Dark Mode
+   =========================================== */
+
+/* Light theme (default) */
+:root {
+    /* Base colors */
+    --dg-card-bg: hsl(0 0% 100%);
+    --dg-card-border: hsl(220 15% 88%);
+    --dg-input-bg: hsl(0 0% 100%);
+    --dg-input-border: hsl(220 15% 88%);
+
+    /* Text colors */
+    --dg-text-primary: hsl(220 20% 10%);
+    --dg-text-secondary: hsl(220 10% 45%);
+    --dg-text-muted: hsl(220 10% 55%);
+
+    /* Avatar/Profile */
+    --dg-avatar-bg: hsl(220 70% 55%);
+    --dg-avatar-text: white;
+    --dg-avatar-border: hsl(220 15% 80%);
+
+    /* UI Elements */
+    --dg-matrix-inactive: hsl(220 15% 90%);
+    --dg-matrix-bg: hsl(220 15% 94%);
+    --dg-divider: hsl(220 15% 90%);
+    --dg-overlay: rgba(0, 0, 0, 0.5);
+
+    /* Recommendation/Highlight box */
+    --dg-rec-text: hsl(142 50% 30%);
+    --dg-rec-bg: hsl(142 70% 50% / 0.1);
+    --dg-rec-border: hsl(142 70% 50% / 0.3);
+
+    /* Status colors - Light theme */
+    --dg-success: hsl(142 76% 36%);
+    --dg-success-bg: hsl(142 76% 95%);
+    --dg-info: hsl(199 89% 48%);
+    --dg-info-bg: hsl(199 89% 95%);
+    --dg-warning: hsl(45 93% 47%);
+    --dg-warning-bg: hsl(45 93% 95%);
+    --dg-danger: hsl(0 84% 50%);
+    --dg-danger-bg: hsl(0 84% 95%);
+    --dg-primary: hsl(220 70% 50%);
+    --dg-primary-bg: hsl(220 70% 95%);
+    --dg-secondary: hsl(262 83% 58%);
+    --dg-secondary-bg: hsl(262 83% 95%);
+
+    /* 9-Box Category colors - Light theme */
+    --dg-star: hsl(142 76% 36%);
+    --dg-star-bg: hsl(142 76% 95%);
+    --dg-high-performer: hsl(142 60% 45%);
+    --dg-high-performer-bg: hsl(142 60% 95%);
+    --dg-high-potential: hsl(199 89% 48%);
+    --dg-high-potential-bg: hsl(199 89% 95%);
+    --dg-core-player: hsl(262 83% 58%);
+    --dg-core-player-bg: hsl(262 83% 95%);
+    --dg-solid-performer: hsl(220 70% 50%);
+    --dg-solid-performer-bg: hsl(220 70% 95%);
+    --dg-inconsistent: hsl(45 93% 47%);
+    --dg-inconsistent-bg: hsl(45 93% 95%);
+    --dg-risk: hsl(25 95% 53%);
+    --dg-risk-bg: hsl(25 95% 95%);
+    --dg-underperformer: hsl(0 84% 50%);
+    --dg-underperformer-bg: hsl(0 84% 95%);
+    --dg-enigma: hsl(280 70% 50%);
+    --dg-enigma-bg: hsl(280 70% 95%);
+
+    /* NineBox aliases (backwards compatibility) */
+    --nb-card-bg: var(--dg-card-bg);
+    --nb-card-border: var(--dg-card-border);
+    --nb-input-bg: var(--dg-input-bg);
+    --nb-input-border: var(--dg-input-border);
+    --nb-text-primary: var(--dg-text-primary);
+    --nb-text-secondary: var(--dg-text-secondary);
+    --nb-text-muted: var(--dg-text-muted);
+    --nb-avatar-bg: var(--dg-avatar-bg);
+    --nb-avatar-text: var(--dg-avatar-text);
+    --nb-avatar-border: var(--dg-avatar-border);
+    --nb-matrix-inactive: var(--dg-matrix-inactive);
+    --nb-matrix-bg: var(--dg-matrix-bg);
+    --nb-divider: var(--dg-divider);
+    --nb-overlay: var(--dg-overlay);
+    --nb-rec-text: var(--dg-rec-text);
+    --nb-rec-bg: var(--dg-rec-bg);
+    --nb-rec-border: var(--dg-rec-border);
+    --nb-star: var(--dg-star);
+    --nb-star-bg: var(--dg-star-bg);
+    --nb-high-performer: var(--dg-high-performer);
+    --nb-high-performer-bg: var(--dg-high-performer-bg);
+    --nb-high-potential: var(--dg-high-potential);
+    --nb-high-potential-bg: var(--dg-high-potential-bg);
+    --nb-core-player: var(--dg-core-player);
+    --nb-core-player-bg: var(--dg-core-player-bg);
+    --nb-solid-performer: var(--dg-solid-performer);
+    --nb-solid-performer-bg: var(--dg-solid-performer-bg);
+    --nb-inconsistent: var(--dg-inconsistent);
+    --nb-inconsistent-bg: var(--dg-inconsistent-bg);
+    --nb-risk: var(--dg-risk);
+    --nb-risk-bg: var(--dg-risk-bg);
+    --nb-underperformer: var(--dg-underperformer);
+    --nb-underperformer-bg: var(--dg-underperformer-bg);
+    --nb-enigma: var(--dg-enigma);
+    --nb-enigma-bg: var(--dg-enigma-bg);
+}
+
+/* Dark theme */
+.dark {
+    /* Base colors */
+    --dg-card-bg: hsl(220 25% 12%);
+    --dg-card-border: hsl(220 20% 20%);
+    --dg-input-bg: hsl(220 20% 16%);
+    --dg-input-border: hsl(220 20% 20%);
+
+    /* Text colors */
+    --dg-text-primary: hsl(220 15% 95%);
+    --dg-text-secondary: hsl(220 10% 60%);
+    --dg-text-muted: hsl(220 10% 45%);
+
+    /* Avatar/Profile */
+    --dg-avatar-bg: hsl(220 70% 55%);
+    --dg-avatar-text: white;
+    --dg-avatar-border: hsl(220 15% 85%);
+
+    /* UI Elements */
+    --dg-matrix-inactive: hsl(220 20% 25%);
+    --dg-matrix-bg: hsl(220 20% 16%);
+    --dg-divider: hsl(220 20% 20%);
+    --dg-overlay: rgba(0, 0, 0, 0.8);
+
+    /* Recommendation/Highlight box */
+    --dg-rec-text: hsl(142 70% 85%);
+    --dg-rec-bg: hsl(142 70% 50% / 0.1);
+    --dg-rec-border: hsl(142 70% 50% / 0.3);
+
+    /* Status colors - Dark theme */
+    --dg-success: hsl(142 70% 50%);
+    --dg-success-bg: hsl(142 70% 15%);
+    --dg-info: hsl(199 80% 55%);
+    --dg-info-bg: hsl(199 80% 15%);
+    --dg-warning: hsl(45 85% 55%);
+    --dg-warning-bg: hsl(45 85% 15%);
+    --dg-danger: hsl(0 75% 55%);
+    --dg-danger-bg: hsl(0 75% 15%);
+    --dg-primary: hsl(220 65% 60%);
+    --dg-primary-bg: hsl(220 65% 15%);
+    --dg-secondary: hsl(262 75% 65%);
+    --dg-secondary-bg: hsl(262 75% 15%);
+
+    /* 9-Box Category colors - Dark theme */
+    --dg-star: hsl(142 70% 50%);
+    --dg-star-bg: hsl(142 70% 15%);
+    --dg-high-performer: hsl(142 55% 55%);
+    --dg-high-performer-bg: hsl(142 55% 15%);
+    --dg-high-potential: hsl(199 80% 55%);
+    --dg-high-potential-bg: hsl(199 80% 15%);
+    --dg-core-player: hsl(262 75% 65%);
+    --dg-core-player-bg: hsl(262 75% 15%);
+    --dg-solid-performer: hsl(220 65% 60%);
+    --dg-solid-performer-bg: hsl(220 65% 15%);
+    --dg-inconsistent: hsl(45 85% 55%);
+    --dg-inconsistent-bg: hsl(45 85% 15%);
+    --dg-risk: hsl(25 90% 58%);
+    --dg-risk-bg: hsl(25 90% 15%);
+    --dg-underperformer: hsl(0 75% 55%);
+    --dg-underperformer-bg: hsl(0 75% 15%);
+    --dg-enigma: hsl(280 65% 60%);
+    --dg-enigma-bg: hsl(280 65% 15%);
+}

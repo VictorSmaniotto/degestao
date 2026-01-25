@@ -71,6 +71,17 @@ class CompetencyRadarChart extends ChartWidget
                     'max' => 4,
                     'ticks' => [
                         'stepSize' => 1,
+                        'backdropColor' => 'transparent', // Remove fundo branco dos números
+                        'color' => '#94a3b8', // Slate-400 para números
+                    ],
+                    'grid' => [
+                        'color' => 'rgba(148, 163, 184, 0.1)', // Slate-400 com transparência
+                    ],
+                    'pointLabels' => [
+                        'color' => '#cbd5e1', // Slate-300 para textos das dimensões
+                        'font' => [
+                            'size' => 11,
+                        ],
                     ],
                 ],
             ],

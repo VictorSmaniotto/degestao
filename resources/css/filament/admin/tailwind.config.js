@@ -7,4 +7,14 @@ export default {
         '../../../../resources/views/filament/**/*.blade.php',
         '../../../../vendor/filament/**/*.blade.php',
     ],
+    theme: {
+        extend: {
+            colors: {
+                // Aliases para variáveis CSS do tema
+                dg: {
+                    bg: 'var(--dg-card-bg)', // Usando var para consistência
+                }
+            },
+        },
+    },
 }
