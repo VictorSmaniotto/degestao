@@ -128,6 +128,21 @@ class NineBoxMatrix extends Page
             $query->where('department', $this->selectedDepartment);
         }
 
+        // Security Scoping
+        $user = auth()->user();
+        if (!$user->isAdmin()) {
+            if ($user->isManager()) {
+                $query->where(function ($q) use ($user) {
+                    $q->where('id', $user->person_id)
+                        ->orWhere('manager_id', $user->person_id);
+                });
+            } else {
+                // Employee
+                $query->where('id', $user->person_id);
+            }
+        }
+
+
         $people = $query->get();
 
         $aggregator = app(\App\Domains\Aggregation\Services\EvidenceAggregator::class);

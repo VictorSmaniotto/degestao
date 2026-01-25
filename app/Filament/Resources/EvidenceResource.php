@@ -134,6 +134,27 @@ class EvidenceResource extends Resource
             ]);
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        $user = auth()->user();
+
+        if ($user->isAdmin()) {
+            return $query;
+        }
+
+        if ($user->isManager()) {
+            // Manager vê evidências próprias E de seus subordinados
+            return $query->whereHas('person', function (Builder $q) use ($user) {
+                $q->where('id', $user->person_id)
+                    ->orWhere('manager_id', $user->person_id);
+            });
+        }
+
+        // Employee vê apenas suas evidências
+        return $query->where('person_id', $user->person_id);
+    }
+
     public static function getRelations(): array
     {
         return [
