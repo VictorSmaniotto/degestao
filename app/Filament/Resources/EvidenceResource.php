@@ -82,9 +82,6 @@ class EvidenceResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
-                    ->label('ID')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('person.name')
                     ->label('Pessoa')
                     ->searchable()
