@@ -1,0 +1,79 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: infra/docker/php/Dockerfile
+    image: degestao-app
+    container_name: degestao-app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - ./infra/docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - degestao-network
+
+  web:
+    image: nginx:alpine
+    container_name: degestao-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/var/www
+      - ./infra/docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - degestao-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: degestao-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - degestao-network
+
+  redis:
+    image: redis:alpine
+    container_name: degestao-redis
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    networks:
+      - degestao-network
+
+  worker:
+    build:
+      context: .
+      dockerfile: infra/docker/php/Dockerfile
+    image: degestao-app
+    container_name: degestao-worker
+    restart: unless-stopped
+    working_dir: /var/www
+    command: php artisan queue:work --sleep=3 --tries=3
+    volumes:
+      - ./:/var/www
+    depends_on:
+      - app
+      - mysql
+      - redis
+    networks:
+      - degestao-network
+
+networks:
+  degestao-network:
+    driver: bridge
+
+volumes:
+  db-data:
+  redis-data:
