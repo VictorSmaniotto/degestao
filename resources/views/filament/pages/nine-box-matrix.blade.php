@@ -159,10 +159,17 @@
 
                     <div class="flex items-center gap-4">
                         <!-- Avatar -->
-                        <div class="rounded-full flex items-center justify-center font-semibold shrink-0 shadow-md"
-                            style="width: 48px; height: 48px; font-size: 0.9rem; background: var(--nb-avatar-bg); color: var(--nb-avatar-text); border: 2px solid var(--nb-avatar-border);">
-                            {{ strtoupper(substr($employee['name'], 0, 2)) }}
-                        </div>
+                        <!-- Avatar -->
+                        @if($employee['avatar'])
+                            <img src="{{ $employee['avatar'] }}" alt="{{ $employee['name'] }}"
+                                class="rounded-full object-cover shadow-md"
+                                style="width: 48px; height: 48px; border: 2px solid var(--nb-avatar-border);">
+                        @else
+                            <div class="rounded-full flex items-center justify-center font-semibold shrink-0 shadow-md"
+                                style="width: 48px; height: 48px; font-size: 0.9rem; background: var(--nb-avatar-bg); color: var(--nb-avatar-text); border: 2px solid var(--nb-avatar-border);">
+                                {{ strtoupper(substr($employee['name'], 0, 2)) }}
+                            </div>
+                        @endif
 
                         <!-- Info -->
                         <div class="flex-1 min-w-0">
@@ -294,10 +301,16 @@
                 <div class="p-6">
                     <!-- Header -->
                     <div class="flex items-center gap-4 mb-6">
-                        <div class="shrink-0 shadow-lg"
-                            style="width: 56px; height: 56px; border-radius: 50%; background: var(--nb-avatar-bg); color: var(--nb-avatar-text); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: bold; border: 3px solid var(--nb-avatar-border);">
-                            {{ strtoupper(substr($selectedPerson['name'], 0, 2)) }}
-                        </div>
+                        @if($selectedPerson['avatar'])
+                             <img src="{{ $selectedPerson['avatar'] }}" alt="{{ $selectedPerson['name'] }}"
+                                class="shrink-0 shadow-lg object-cover"
+                                style="width: 56px; height: 56px; border-radius: 50%; border: 3px solid var(--nb-avatar-border);">
+                        @else
+                            <div class="shrink-0 shadow-lg"
+                                style="width: 56px; height: 56px; border-radius: 50%; background: var(--nb-avatar-bg); color: var(--nb-avatar-text); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: bold; border: 3px solid var(--nb-avatar-border);">
+                                {{ strtoupper(substr($selectedPerson['name'], 0, 2)) }}
+                            </div>
+                        @endif
                         <div>
                             <h2 class="text-xl font-semibold" style="color: var(--nb-text-primary);">
                                 {{ $selectedPerson['name'] }}

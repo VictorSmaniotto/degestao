@@ -41,6 +41,12 @@ class AdminPanelProvider extends PanelProvider
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
             ])
+            ->userMenuItems([
+                \Filament\Navigation\MenuItem::make()
+                    ->label('Meu Perfil')
+                    ->url(fn(): string => \App\Filament\Pages\MyProfile::getUrl())
+                    ->icon('heroicon-o-user-circle'),
+            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

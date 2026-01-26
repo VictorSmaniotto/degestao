@@ -75,7 +75,7 @@ class NineBoxMatrix extends Page
             'manager_name' => $person->manager?->name,
             'admitted_at' => $person->admitted_at?->translatedFormat('d \d\e F \d\e Y'),
             'evaluation_date' => now()->translatedFormat('d \d\e F \d\e Y'), // Mock for now, or use Cycle end date
-            'avatar' => null,
+            'avatar' => $person->avatar_path ? \Illuminate\Support\Facades\Storage::url($person->avatar_path) : null,
             'position' => [
                 'performance' => $perfIndex, // 1-3
                 'potential' => $potIndex, // 1-3
@@ -219,7 +219,7 @@ class NineBoxMatrix extends Page
                 'name' => $person->name,
                 'role' => $person->role,
                 'department' => $person->department,
-                'avatar' => null, // Person model has no avatar column yet
+                'avatar' => $person->avatar_path ? \Illuminate\Support\Facades\Storage::url($person->avatar_path) : null,
                 'email' => $person->email,
                 'x' => $result->x,
                 'y' => $result->y,
